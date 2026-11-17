@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar — every pre-token protocol, priced off the tokens that already trade</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="dot"></span> TOKEN RADAR <span class="muted">· radar-3</span></div>
+  <div class="topmeta" id="topmeta">Snapshot — · DefiLlama protocol index · Model radar-3</div>
+</header>
+
+<main>
+  <section class="hero" id="hero">
+    <h1>Every protocol that records no token,<br>priced off the tokens that already trade.</h1>
+    <p class="lede">No asserted multiples. The radar fits one curve — market cap against TVL — on the
+    snapshot&rsquo;s own 110 traded tokens, keeps it only because it beats a flat multiple on
+    held-out tokens, and nets every farm plan to the dollar. Implied value is a model
+    estimate, not a price and not a prediction that a token will be issued, or when.</p>
+    <div class="stats" id="stats"></div>
+    <div class="verdicts" id="verdicts"></div>
+  </section>
+
+  <section class="spot" id="spot">
+    <h2>Top 5 spotlight</h2>
+    <div class="cards" id="spotcards"></div>
+  </section>
+
+  <section class="controls" id="controls">
+    <div class="ctl"><label for="q">Search</label><input id="q" type="search" placeholder="Search name or category"></div>
+    <div class="ctl"><label for="cat">Category</label><select id="cat"><option value="">All categories</option></select></div>
+    <div class="ctl"><label for="chain">Chain</label><select id="chain"><option value="">All chains</option></select></div>
+    <div class="ctl"><label for="minTvl">Min TVL</label><select id="minTvl">
+      <option value="0">Any TVL</option><option value="50000000">$50M</option><option value="100000000">$100M</option>
+      <option value="500000000">$500M</option><option value="1000000000">$1B</option></select></div>
+    <div class="ctl"><label for="verdict">Verdict</label><select id="verdict">
+      <option value="">All verdicts</option><option value="FARM">FARM</option><option value="THIN">THIN</option><option value="SKIP">SKIP</option></select></div>
+    <div class="ctl check"><label><input id="watch" type="checkbox"> Watchlist only</label></div>
+    <div class="ctl tabs"><button id="tabPre" class="tab on" type="button">Pre-token</button><button id="tabLive" class="tab" type="button">Live token</button></div>
+  </section>
+
+  <p class="shown" id="shown"></p>
+
+  <section class="boardwrap" id="boardwrap">
+    <table class="board" id="board">
+      <thead><tr>
+        <th data-sort="rank">Rank</th><th data-sort="name">Protocol</th><th data-sort="tvl_usd">TVL</th>
+        <th data-sort="change_7d">7d</th><th data-sort="implied_value_usd">Implied value</th>
+        <th data-sort="implied_low_usd">Band</th><th data-sort="yield_per_1000_usd">Yield / $1k</th>
+        <th data-sort="verdict">Verdict</th><th data-sort="deposit_usd">Deposit</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+
+  <section class="detail" id="detail" hidden></section>
+
+  <section class="method" id="method">
+    <h2>How the price is set</h2>
+    <div id="methodBody"></div>
+    <h3>Blind tests — every term tried, only the curve kept</h3>
+    <table class="mini" id="blindTable"><thead><tr><th>Model</th><th>Leave-one-out error</th><th>Kept</th></tr></thead><tbody></tbody></table>
+    <p class="fine">Leave-one-out error is the mean absolute error in log market cap when each traded
+    token is held out and predicted from the rest. Lower is better. Category, growth, age and
+    chain count each make the held-out error worse, so each stays out of the price — the board
+    still shows growth and age on every row, and the farm plan still uses age for its hold.</p>
+    <h3>The farm math</h3>
+    <p>Each plan sizes its deposit from $100, $250, $500 or $1,000: the smallest that clears the
+    low end of the comparables&rsquo; band is a FARM; the smallest that clears only the central
+    estimate is a THIN; a row no deposit up to $1,000 clears is a SKIP. Expected value is
+    pro-rata: 10% of the implied value (the share a launch hands its farmers — Arbitrum handed
+    its users 11.62% of supply) times the deposit&rsquo;s share of the protocol&rsquo;s TVL. Cost is
+    six transactions at the cheapest chain&rsquo;s typical gas (November 2026), a $2 bridge fee,
+    and the deposit&rsquo;s opportunity cost at 5% a year over the hold. The low end is the
+    25th percentile of what traded tokens actually fetched against the curve.</p>
+    <h3>What this radar does not know</h3>
+    <p>The curve explains <span id="r2pct">46%</span> of the variance in log market cap across the
+    <span id="compsN">110</span> traded tokens. The band is wide — a quarter of traded tokens fetch
+    under <span id="bandLow">0.35&times;</span> the curve and a quarter fetch over
+    <span id="bandHigh">3.06&times;</span> it — so every implied value carries a band and every rank
+    carries a range from 200 refits. A protocol on this board may still have a token its DefiLlama
+    record does not carry, and a launch may never come.</p>
+  </section>
+
+  <section class="comps" id="comps">
+    <h2>The comparables — the 110 traded tokens this radar is priced off</h2>
+    <p class="fine">Every token below records a market cap and a TVL in the snapshot. <span id="setAside">18</span>
+    of the <span id="tradedN">128</span> traded tokens are set aside by the rule in the method: a
+    versioned pool, whose token is its parent&rsquo;s, or a market cap more than a hundredfold from
+    its TVL either way.</p>
+    <table class="mini" id="compsTable"><thead><tr><th>Token</th><th>Category</th><th>TVL</th><th>Market cap</th><th>Mcap / TVL</th></tr></thead><tbody></tbody></table>
+  </section>
+
+  <footer>
+    <p>Sources: DefiLlama protocol index, sealed snapshot of 2026-11-14 (758 protocols, 40 on the
+    watchlist). Airdrop share: Arbitrum&rsquo;s user airdrop was 11.62% of supply (Arbitrum
+    Foundation). Gas: typical per-transaction costs, November 2026. This page renders with no
+    network: the data ships beside it as data.js, and the page recomputes nothing from the
+    network.</p>
+  </footer>
+</main>
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
